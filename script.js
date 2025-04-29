@@ -387,3 +387,55 @@ setInterval(() => {
         updateTestimonial();
     }
 }, 5000);
+
+// Gate functionality
+document.addEventListener('DOMContentLoaded', () => {
+    const gateOverlay = document.getElementById('gate-overlay');
+    const enterGateButton = document.getElementById('enter-gate');
+    const mainContent = document.body;
+    
+    // Hide all content initially except the gate
+    const contentSections = document.querySelectorAll('header, section, footer');
+    contentSections.forEach(section => {
+        section.classList.add('content-reveal');
+    });
+    
+    // Function to open the gate
+    const openGate = () => {
+        // Add fade out animation to the gate
+        gateOverlay.classList.add('gate-fade-out');
+        
+        // Enable scrolling
+        document.body.style.overflow = '';
+        
+        // Animate content sections sequentially
+        contentSections.forEach((section, index) => {
+            setTimeout(() => {
+                section.classList.add('content-animate');
+            }, 500 + (index * 100)); // Stagger the animations
+        });
+        
+        // Remove the gate from DOM after animation completes
+        setTimeout(() => {
+            gateOverlay.style.display = 'none';
+        }, 1000);
+    };
+    
+    // Event listener for the enter button
+    if (enterGateButton) {
+        enterGateButton.addEventListener('click', openGate);
+    }
+    
+    // Also allow clicking anywhere on the gate to enter
+    if (gateOverlay) {
+        gateOverlay.addEventListener('click', (e) => {
+            // Only trigger if clicking directly on the overlay (not on children)
+            if (e.target === gateOverlay) {
+                openGate();
+            }
+        });
+    }
+    
+    // Prevent scrolling while gate is active
+    document.body.style.overflow = 'hidden';
+});
